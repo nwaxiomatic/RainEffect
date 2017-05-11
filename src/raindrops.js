@@ -218,10 +218,10 @@ Raindrops.prototype={
         let rainDrop = this.createDrop({
             x: (this.posData.PrintMe[this.dropCounter].x / maxWidth *.8 + 1) * widthS/2,
             y: (-this.posData.PrintMe[this.dropCounter].y / maxWidth * .8 * widthS / 2 + heightS/2),
-            r: r/5,
+            r: r/4,
             momentum:0,
-            spreadX: 8,
-            spreadY: 8,
+            spreadX: 10,
+            spreadY: 10,
             static: true,
           });
           if (rainDrop != null) {
@@ -229,7 +229,7 @@ Raindrops.prototype={
           }
       }
       
-      while(chance(this.options.rainChance*timeScale*this.areaMultiplier) && count<2*limit){
+      while(chance(this.options.rainChance*timeScale*this.areaMultiplier) && count<1.6*limit){
         count++;
         let r=random(this.options.minR,this.options.maxR,(n)=>{
           return Math.pow(n,3);
@@ -244,7 +244,6 @@ Raindrops.prototype={
         });
         if(rainDrop!=null){
           rainDrops.push(rainDrop);
-        }
         }
       }
     }
