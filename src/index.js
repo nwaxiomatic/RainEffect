@@ -96,7 +96,7 @@ function init(){
   canvas.style.width=window.innerWidth+"px";
   canvas.style.height=window.innerHeight+"px";
 
-  var tagsFile = '../data/positions.json';
+  var tagsFile = '../../demo/data/positions.json';
 
   var $ = require('jquery');
 
