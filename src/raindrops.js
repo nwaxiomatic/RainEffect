@@ -41,13 +41,17 @@ const defaultOptions={
   collisionBoost:1,
 }
 
-function Raindrops(width,height,scale,dropAlpha,dropColor,options={}){
+function Raindrops(width,height,scale,dropAlpha,dropColor,textColor,textAlpha,posData,options={}){
   this.width=width;
   this.height=height;
   this.scale=scale;
   this.dropAlpha=dropAlpha;
   this.dropColor=dropColor;
+  this.textColor=textColor;
+  this.textAlpha=textAlpha;
+  this.posData = posData;
   this.options=Object.assign({},defaultOptions,options);
+  this.dropCounter=0;
   this.init();
 }
 Raindrops.prototype={
@@ -67,6 +71,7 @@ Raindrops.prototype={
   clearDropletsGfx:null,
   textureCleaningIterations:0,
   lastRender:null,
+  dropCounter:0,
 
   options:null,
 
@@ -194,7 +199,37 @@ Raindrops.prototype={
     if(this.options.raining){
       let limit=this.options.rainLimit*timeScale*this.areaMultiplier;
       let count=0;
-      while(chance(this.options.rainChance*timeScale*this.areaMultiplier) && count<limit){
+      let radius = 700;
+    
+      let dropsCount = 1000.0;
+      let i = 0;
+      let maxWidth = this.posData.maxWidth;
+      var widthS = this.width /this.scale;
+      var heightS = this.height / this.scale;
+      while(count < 11 * limit / 8 && i < dropsCount){
+        i++;
+        count ++;
+        this.dropCounter ++;
+        if (this.dropCounter >= this.posData.PrintMe.length){
+          this.dropCounter -= this.posData.PrintMe.length;
+        }
+        let r=this.options.maxR;
+        //console.log(this.height / 4 + radius * Math.cos(2*Math.PI * i/dropsCount));
+        let rainDrop = this.createDrop({
+            x: (this.posData.PrintMe[this.dropCounter].x / maxWidth *.8 + 1) * widthS/2,
+            y: (-this.posData.PrintMe[this.dropCounter].y / maxWidth * .8 * widthS / 2 + heightS/2),
+            r: r/5,
+            momentum:0,
+            spreadX: 8,
+            spreadY: 8,
+            static: true,
+          });
+          if (rainDrop != null) {
+            rainDrops.push(rainDrop);
+          }
+      }
+      
+      while(chance(this.options.rainChance*timeScale*this.areaMultiplier) && count<2*limit){
         count++;
         let r=random(this.options.minR,this.options.maxR,(n)=>{
           return Math.pow(n,3);
@@ -202,13 +237,14 @@ Raindrops.prototype={
         let rainDrop=this.createDrop({
           x:random(this.width/this.scale),
           y:random((this.height/this.scale)*this.options.spawnArea[0],(this.height/this.scale)*this.options.spawnArea[1]),
-          r:r,
-          momentum:1+((r-this.options.minR)*0.1)+random(2),
+          r:r*.7,
+          momentum:(1+((r-this.options.minR)*0.1)+random(2))/3,
           spreadX:1.5,
           spreadY:1.5,
         });
         if(rainDrop!=null){
           rainDrops.push(rainDrop);
+        }
         }
       }
     }
@@ -246,7 +282,9 @@ Raindrops.prototype={
         )
       });
     }
+    //console.log(this.droplets);
     this.ctx.drawImage(this.droplets,0,0,this.width,this.height);
+
   },
   updateDrops(timeScale){
     let newDrops=[];
@@ -265,7 +303,7 @@ Raindrops.prototype={
       if(!drop.killed){
         // update gravity
         // (chance of drops "creeping down")
-        if(chance((drop.r-(this.options.minR*this.options.dropFallMultiplier)) * (0.1/this.deltaR) * timeScale)){
+        if(chance((drop.r-(this.options.minR*this.options.dropFallMultiplier)) * (0.1/this.deltaR) * timeScale) && !drop.static){
           drop.momentum += random((drop.r/this.options.maxR)*4);
         }
         // clean small drops

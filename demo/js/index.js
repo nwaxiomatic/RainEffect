@@ -12265,9 +12265,29 @@ Raindrops.prototype = Object.defineProperties({
   },
   updateRain: function updateRain(timeScale) {
     var rainDrops = [];
+    console.log('ju');
     if (this.raining) {
       var limit = this.rainLimit * timeScale * this.areaMultiplier;
       var count = 0;
+      var radius = .5;
+      var dropsCount = 20.0;
+      for(var i = 0; i < dropsCount; i++){
+        count ++;
+        var r = (0, _random.random)(this.minR, this.maxR, function (n) {
+          return Math.pow(n, 3);
+        });
+        var rainDrop = this.createDrop({
+            x: (0, Math.cos(2*Math.PI * i/dropsCount))(radius * this.width),
+            y: (0, Math.sin(2*Math.PI * i/dropsCount))(radius * this.height),
+            r: r,
+            momentum: 1 + (r - this.minR) * 0.3 + (0, _random.random)(0.5),
+            spreadX: 1.5,
+            spreadY: 1.5
+          });
+          if (rainDrop != null) {
+            rainDrops.push(rainDrop);
+          }
+      }
       while ((0, _random.chance)(this.rainChance * timeScale * this.areaMultiplier) && count < limit) {
         count++;
         var r = (0, _random.random)(this.minR, this.maxR, function (n) {

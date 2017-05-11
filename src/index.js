@@ -12,7 +12,7 @@ let textureRainFg, textureRainBg,
   textureFalloutFg, textureFalloutBg,
   textureSunFg, textureSunBg,
   textureDrizzleFg, textureDrizzleBg,
-  dropColor, dropAlpha;
+  dropColor, dropAlpha, textColor, textAlpha;
 
 let textureFg,
   textureFgCtx,
@@ -42,6 +42,9 @@ function loadTextures(){
   loadImages([
     {name:"dropAlpha",src:"img/drop-alpha.png"},
     {name:"dropColor",src:"img/drop-color.png"},
+
+    {name:"textColor",src:"img/text-color.png"},
+    {name:"textAlpha",src:"img/text-alpha.png"},
 
     {name:"textureRainFg",src:"img/weather/texture-rain-fg.png"},
     {name:"textureRainBg",src:"img/weather/texture-rain-bg.png"},
@@ -76,6 +79,9 @@ function loadTextures(){
     dropColor = images.dropColor.img;
     dropAlpha = images.dropAlpha.img;
 
+    textColor = images.textColor.img;
+    textAlpha = images.textAlpha.img;
+
     init();
   });
 }
@@ -90,12 +96,25 @@ function init(){
   canvas.style.width=window.innerWidth+"px";
   canvas.style.height=window.innerHeight+"px";
 
+  var tagsFile = '../data/positions.json';
+
+  var $ = require('jquery');
+
+  $.ajax({
+    url: tagsFile,
+    dataType: "text",
+    success: function (posData) {
+        var posjson = $.parseJSON(posData);
+
   raindrops=new Raindrops(
     canvas.width,
     canvas.height,
     dpi,
     dropAlpha,
-    dropColor,{
+    dropColor,
+    textColor,
+    textAlpha,
+    posjson,{
       trailRate:1,
       trailScaleRange:[0.2,0.45],
       collisionRadius : 0.45,
@@ -108,7 +127,7 @@ function init(){
   textureBg = createCanvas(textureBgSize.width,textureBgSize.height);
   textureBgCtx = textureBg.getContext('2d');
 
-  generateTextures(textureRainFg,textureRainBg);
+  generateTextures(textureDrizzleFg,textureDrizzleBg);
 
   renderer = new RainRenderer(canvas, raindrops.canvas, textureFg, textureBg, null,{
     brightness:1.04,
@@ -119,13 +138,15 @@ function init(){
   });
 
   setupEvents();
+  }
+  })
 }
 
 function setupEvents(){
 
-  setupParallax();
+  //setupParallax();
   setupWeather();
-  setupFlash();
+  //setupFlash();
 }
 function setupParallax(){
   document.addEventListener('mousemove',(event)=>{
@@ -152,10 +173,6 @@ function setupFlash(){
 }
 function setupWeather(){
   setupWeatherData();
-  window.addEventListener("hashchange",(event)=>{
-    updateWeather();
-  });
-  updateWeather();
 }
 function setupWeatherData(){
   let defaultWeather={
@@ -166,10 +183,10 @@ function setupWeatherData(){
     rainLimit:6,
     dropletsRate:50,
     dropletsSize:[3,5.5],
-    trailRate:1,
+    trailRate:2,
     trailScaleRange:[0.25,0.35],
-    fg:textureRainFg,
-    bg:textureRainBg,
+    fg:textureDrizzleFg,
+    bg:textureDrizzleBg,
     flashFg:null,
     flashBg:null,
     flashChance:0,
@@ -186,8 +203,8 @@ function setupWeatherData(){
       dropletsRate:50,
       raining:true,
       // trailRate:2.5,
-      fg:textureRainFg,
-      bg:textureRainBg
+      fg:textureDrizzleBg,
+      bg:textureDrizzleBg
     }),
     storm:weather({
       maxR:55,
@@ -196,8 +213,8 @@ function setupWeatherData(){
       dropletsSize:[3,5.5],
       trailRate:2.5,
       trailScaleRange:[0.25,0.4],
-      fg:textureRainFg,
-      bg:textureRainBg,
+      fg:textureDrizzleFg,
+      bg:textureDrizzleBg,
       flashFg:textureStormLightningFg,
       flashBg:textureStormLightningBg,
       flashChance:0.1
@@ -231,44 +248,6 @@ function setupWeatherData(){
       bg:textureSunBg
     }),
   };
-}
-function updateWeather(){
-  let hash=window.location.hash;
-  let currentSlide=null;
-  let currentNav=null;
-  if(hash!=""){
-    currentSlide = document.querySelector(hash);
-  }
-  if(currentSlide==null){
-    currentSlide = document.querySelector(".slide");
-    hash="#"+currentSlide.getAttribute("id");
-  }
-  currentNav=document.querySelector("[href='"+hash+"']");
-  let data=weatherData[currentSlide.getAttribute('data-weather')];
-  curWeatherData=data;
-
-  raindrops.options=Object.assign(raindrops.options,data)
-
-  raindrops.clearDrops();
-
-  TweenLite.fromTo(blend,1,{
-    v:0
-  },{
-    v:1,
-    onUpdate:()=>{
-      generateTextures(data.fg,data.bg,blend.v);
-      renderer.updateTextures();
-    }
-  })
-
-  let lastSlide=document.querySelector(".slide--current");
-  if(lastSlide!=null) lastSlide.classList.remove("slide--current");
-
-  let lastNav=document.querySelector(".nav-item--current");
-  if(lastNav!=null) lastNav.classList.remove("nav-item--current");
-
-  currentSlide.classList.add("slide--current");
-  currentNav.classList.add("nav-item--current");
 }
 
 function flash(baseBg,baseFg,flashBg,flashFg){

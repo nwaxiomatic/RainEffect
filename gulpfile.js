@@ -10,10 +10,13 @@ var gulp = require('gulp'),
 
 function compileJS(file){
   browserify('src/'+file+'.js',{debug:true})
-    .transform(babelify)
+    .transform(["babelify",{presets: ["es2015"]}])
     .transform('glslify')
     .bundle()
-    .on("error", function (err) { console.log("Error : " + err.message); })
+    .on("error", function (err) { 
+      console.log("Error : " + err.message);
+      console.log("File : " + file); 
+    })
     .pipe(source(file+'.min.js'))
     .pipe(streamify(uglify()))
     .pipe(gulp.dest('demo/js'));
