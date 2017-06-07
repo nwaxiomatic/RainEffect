@@ -101,6 +101,11 @@ RainRenderer.prototype={
   resize(){
 
   },
+  saveImage(){
+    this.textures.forEach((texture,i)=>{
+      window.location=texture.img.toDataURL('png');
+    });
+  },
   get overlayTexture(){
 
   },

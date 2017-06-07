@@ -121,5 +121,6 @@ void main() {
     fg=blend(border,fg);
   }
 
-  gl_FragColor = blend(bg,fg);
+  //gl_FragColor = blend(bg,fg);
+  gl_FragColor = texture2D(u_waterMap, scaledTexCoord());
 }

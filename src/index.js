@@ -96,7 +96,8 @@ function init(){
   canvas.style.width=window.innerWidth+"px";
   canvas.style.height=window.innerHeight+"px";
 
-  var tagsFile = '../../demo/data/positions.json';
+  //var tagsFile = '../../demo/data/positions.json';
+  var tagsFile = '/data/positions.json';
 
   var $ = require('jquery');
 
@@ -136,6 +137,13 @@ function init(){
     // minRefraction:256,
     // maxRefraction:512
   });
+
+    document.addEventListener("keypress", function(event) {
+    if (event.keyCode == 80) {
+        renderer.saveImage();
+        alert('print');
+    }
+})
 
   setupEvents();
   }
