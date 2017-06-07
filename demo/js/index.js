@@ -27134,7 +27134,7 @@
                 success: function success(posData) {
                     var posjson = $.parseJSON(posData);
 
-                    raindrops = new _raindrops2.default(canvas.width, canvas.height, dpi, dropAlpha, dropColor, textColor, textAlpha, posjson, {
+                    raindrops = new _raindrops2.default(2160, 3840, dpi, dropAlpha, dropColor, textColor, textAlpha, posjson, {
                         trailRate: 1,
                         trailScaleRange: [0.2, 0.45],
                         collisionRadius: 0.45,
@@ -27486,7 +27486,7 @@
                 this.gl.activeTexture(0);
                 this.gl.updateTexture(this.canvasLiquid);
                 //console.log(this.canvasLiquid);
-                //this.saveImage();
+                this.saveImage();
             },
             resize: function resize() {}, 
             saveImage: function download() {
@@ -27729,7 +27729,13 @@
                     ctx.globalCompositeOperation = "source-over";
 
                     d = Math.floor(d * (this.dropsGfx.length - 1));
-                    ctx.drawImage(this.dropsGfx[d], (x - r * scaleX * (spreadX + 1)) * this.scale, (y - r * scaleY * (spreadY + 1)) * this.scale, r * 2 * scaleX * (spreadX + 1) * this.scale, r * 2 * scaleY * (spreadY + 1) * this.scale);
+                    ctx.drawImage(
+                        this.dropsGfx[d], 
+                        (x - r * scaleX * (spreadX + 1)) * this.scale, 
+                        (y - r * scaleY * (spreadY + 1)) * this.scale, 
+                        r * 2 * scaleX * (spreadX + 1) * this.scale, 
+                        r * 2 * scaleY * (spreadY + 1) * this.scale
+                    );
                 }
             },
             clearDroplets: function clearDroplets(x, y) {
@@ -27737,7 +27743,13 @@
 
                 var ctx = this.dropletsCtx;
                 ctx.globalCompositeOperation = "destination-out";
-                ctx.drawImage(this.clearDropletsGfx, (x - r) * this.dropletsPixelDensity * this.scale, (y - r) * this.dropletsPixelDensity * this.scale, r * 2 * this.dropletsPixelDensity * this.scale, r * 2 * this.dropletsPixelDensity * this.scale * 1.5);
+                ctx.drawImage(
+                    this.clearDropletsGfx, 
+                    (x - r) * this.dropletsPixelDensity * this.scale, 
+                    (y - r) * this.dropletsPixelDensity * this.scale, 
+                    r * 2 * this.dropletsPixelDensity * this.scale, 
+                    r * 2 * this.dropletsPixelDensity * this.scale * 1.5
+                );
             },
             clearCanvas: function clearCanvas() {
                 this.ctx.clearRect(0, 0, this.width, this.height);
@@ -27777,11 +27789,11 @@
                         //console.log(this.height / 4 + radius * Math.cos(2*Math.PI * i/dropsCount));
                         var rainDrop = this.createDrop({
                             x: (this.posData.PrintMe[this.dropCounter].x / maxWidth * .8 + 1) * widthS / 2,
-                            y: -this.posData.PrintMe[this.dropCounter].y / maxWidth * .8 * widthS / 2 + heightS / 2,
+                            y: -this.posData.PrintMe[this.dropCounter].y / maxWidth * .8 * widthS / 2 + heightS / 4,
                             r: r / 4,
                             momentum: 0,
-                            spreadX: 10,
-                            spreadY: 10,
+                            spreadX: 7,
+                            spreadY: 7,
                             static: true
                         });
                         if (rainDrop != null) {
