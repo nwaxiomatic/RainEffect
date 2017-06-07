@@ -27124,7 +27124,7 @@
             canvas.style.height = window.innerHeight + "px";
 
             //var tagsFile = '../../demo/data/positions.json';
-            var tagsFile = '/data/positions.json';
+            var tagsFile = 'data/positions.json';
 
             var $ = require('jquery');
 
