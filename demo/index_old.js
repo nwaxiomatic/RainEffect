@@ -1,4 +1,3 @@
-var saveImages = false;
 (function e(t, n, r) {
     function s(o, u) {
         if (!n[o]) {
@@ -27135,7 +27134,7 @@ var saveImages = false;
                 success: function success(posData) {
                     var posjson = $.parseJSON(posData);
 
-                    raindrops = new _raindrops2.default(1000, 160, dpi, dropAlpha, dropColor, textColor, textAlpha, posjson, {
+                    raindrops = new _raindrops2.default(2160, 3840, dpi, dropAlpha, dropColor, textColor, textAlpha, posjson, {
                         trailRate: 1,
                         trailScaleRange: [0.2, 0.45],
                         collisionRadius: 0.45,
@@ -27208,7 +27207,7 @@ var saveImages = false;
                 maxR: 50,
                 rainChance: 0.35,
                 rainLimit: 6,
-                dropletsRate: 10,
+                dropletsRate: 50,
                 dropletsSize: [3, 5.5],
                 trailRate: 2,
                 trailScaleRange: [0.25, 0.35],
@@ -27227,7 +27226,7 @@ var saveImages = false;
             weatherData = {
                 rain: weather({
                     rainChance: 0.35,
-                    dropletsRate: 20,
+                    dropletsRate: 50,
                     raining: true,
                     // trailRate:2.5,
                     fg: textureDrizzleBg,
@@ -27236,7 +27235,7 @@ var saveImages = false;
                 storm: weather({
                     maxR: 55,
                     rainChance: 0.4,
-                    dropletsRate: 20,
+                    dropletsRate: 80,
                     dropletsSize: [3, 5.5],
                     trailRate: 2.5,
                     trailScaleRange: [0.25, 0.4],
@@ -27487,9 +27486,7 @@ var saveImages = false;
                 this.gl.activeTexture(0);
                 this.gl.updateTexture(this.canvasLiquid);
                 //console.log(this.canvasLiquid);
-                /*if(this.frame < 900){
-                    this.saveImage();
-                }*/
+                //this.saveImage();
             },
             resize: function resize() {}, 
             saveImage: function download() {
@@ -27578,7 +27575,7 @@ var saveImages = false;
             r: 0,
             spreadX: 0,
             spreadY: 0,
-            momentum: 100,
+            momentum: 0,
             momentumX: 0,
             lastSpawn: 0,
             nextSpawn: 0,
@@ -27593,12 +27590,12 @@ var saveImages = false;
             maxDrops: 900,
             rainChance: 0.3,
             rainLimit: 3,
-            dropletsRate: 20,
+            dropletsRate: 50,
             dropletsSize: [2, 4],
             dropletsCleaningRadiusMultiplier: 0.43,
             raining: true,
             globalTimeScale: 1,
-            trailRate: 3,
+            trailRate: 1,
             autoShrink: true,
             spawnArea: [-0.1, 0.95],
             trailScaleRange: [0.2, 0.5],
@@ -27775,7 +27772,7 @@ var saveImages = false;
                     
                     var radius = 700;
 
-                    var dropsCount = 5000.0;
+                    var dropsCount = 2000.0;
                     var i = 0;
                     var count = 0;
                     var maxWidth = this.posData.maxWidth;
@@ -27787,7 +27784,7 @@ var saveImages = false;
     
                         if (this.dropCounter >= this.posData.PrintMe.length) {
                             this.dropCounter -= this.posData.PrintMe.length;
-                        }
+                        
                         var r = this.options.maxR;
                         //console.log(this.height / 4 + radius * Math.cos(2*Math.PI * i/dropsCount));
                         var rainDrop = this.createDrop({
@@ -27805,10 +27802,9 @@ var saveImages = false;
                         i++;
                         count++;
                         this.dropCounter++;
-                        if(this.dropCounter % 6 == 0)
-                            this.dropCounter++;
                     }
                     */
+                    
                     
                     while ((0, _random.chance)(this.options.rainChance * timeScale * this.areaMultiplier) && count < 1.6 * limit) {
                         count++;
@@ -27892,13 +27888,8 @@ var saveImages = false;
                             drop.shrink += 0.01;
                         }
                         //update shrinkage
-                        if(this.dropCounter >= this.posData.PrintMe.length){
-                        saveImages = true;
-                            drop.r -= drop.shrink * timeScale;
+                        drop.r -= drop.shrink * timeScale;
                         if (drop.r <= 0) drop.killed = true;
-                        }
-                        
-                        
 
                         // update trails
         
